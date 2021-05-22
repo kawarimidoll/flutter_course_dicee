@@ -23,48 +23,35 @@ class DicePage extends StatefulWidget {
 }
 
 class _DicePageState extends State<DicePage> {
-  int leftDiceNum = 1;
-  int rightDiceNum = 3;
+  List<int> dices = [1, 2];
+
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Row(
-        children: <Widget>[
-          Expanded(
-            child: TextButton(
-              onPressed: () {
-                setState(() {
-                  changeDiceFace();
-                });
-                print('Left button got pressed!');
-              },
-              child: Image.asset('images/dice$leftDiceNum.png'),
-            ),
-          ),
-          Expanded(
-            child: TextButton(
-              onPressed: () {
-                setState(() {
-                  changeDiceFace();
-                });
-                print('Right button got pressed!');
-              },
-              child: Image.asset('images/dice$rightDiceNum.png'),
-            ),
-          ),
-        ],
+        children: dices.asMap().entries.map((e) => diceWidget(e.key)).toList(),
       ),
     );
   }
 
-  void changeDiceFace(){
-    leftDiceNum = rollDice();
-    rightDiceNum = rollDice();
-    print('Left dice: $leftDiceNum');
-    print('Right dice: $rightDiceNum');
+  Widget diceWidget(index) {
+    return Expanded(
+      child: TextButton(
+        onPressed: () {
+          setState(() => changeDiceFace());
+          print('Dice #$index got pressed!');
+        },
+        child: Image.asset('images/dice${dices[index]}.png'),
+      ),
+    );
   }
 
-  int rollDice() {
-    return Random().nextInt(6) + 1;
+  void changeDiceFace() {
+    dices = getDices(dices.length);
+    print(dices);
+  }
+
+  List<int> getDices(int length) {
+    return List.filled(length, 0).map((e) => Random().nextInt(6) + 1).toList();
   }
 }
